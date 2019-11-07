@@ -1,56 +1,57 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src)
+import Html exposing (Html, Attribute, button, div, text, input)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onInput, onClick)
+import Array
 
+main =
+  Browser.sandbox { init = init, update = update, view = view }
 
----- MODEL ----
+type alias Model = {
+  integer: Int,
+  content: String,
+  tiles: Array.Array(Int)
+  }
 
+init : Model
+init = {
+  integer = 0,
+  content = "",
+  tiles = Array.fromList [2, 3, 1, 4, 5, 6, 7, 8, 0]
+  }
 
-type alias Model =
-    {}
+type Msg = Increment | Decrement | Reset | Change String
 
-
-init : ( Model, Cmd Msg )
-init =
-    ( {}, Cmd.none )
-
-
-
----- UPDATE ----
-
-
-type Msg
-    = NoOp
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+  case msg of
+    Increment ->
+      { model | integer = model.integer + 1 }
 
+    Decrement ->
+      { model | integer = model.integer + 1 }
 
+    Reset ->
+      init
 
----- VIEW ----
+    Change newContent ->
+      {model | content = newContent}
 
+tileClass index value =
+  if (index + 1) == value then 
+     "tile correct"
+  else if value == 0 then
+    "tile"
+  else 
+    "tile incorrect"
+
+displayTile index value = 
+    div [class  (tileClass index value)] [text (String.fromInt value)]
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
-        ]
-
-
-
----- PROGRAM ----
-
-
-main : Program () Model Msg
-main =
-    Browser.element
-        { view = view
-        , init = \_ -> init
-        , update = update
-        , subscriptions = always Sub.none
-        }
+  div []
+    [ 
+    div [class "puzzleContainer"] (Array.toList (Array.indexedMap displayTile model.tiles))
+    ]
