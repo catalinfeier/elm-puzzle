@@ -42,6 +42,12 @@ img {
   color: lightcoral;
 }
 
+.zero {
+  color: transparent;
+  text-shadow: none;
+  user-select: none;
+}
+
 .puzzleContainer {
   max-width: 400px;
   margin: 0 auto;
